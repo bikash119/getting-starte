@@ -1,0 +1,9 @@
+{
+    "sales_deals":[
+        {"name" : "jack","value": 4000},
+        {"name" : "jill","value": 2000},
+        {"name" : "andy","value": 3000},
+        {"name" : "kapil","value": 7000}
+    ]
+    
+}
