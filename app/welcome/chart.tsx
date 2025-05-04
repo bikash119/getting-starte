@@ -1,18 +1,20 @@
-import { useFetcher } from "react-router"
+import type { PostgrestError } from "@supabase/supabase-js"
+import { Chart as ReactChart } from 'react-charts';
 type Deal = {
     name: string
     value: number
 } 
 type WelcomeProps = {
     loaderData: {
-        salesDeals: any[]
+      salesDeals: any[] | null
+      error: PostgrestError | null
     }
   }
 
 
 export default function Chart({loaderData} : WelcomeProps ){
-    const {salesDeals} = loaderData 
-    const elems = salesDeals.map((deal:Deal) => 
+    const {salesDeals,error} = loaderData 
+    const elems = salesDeals?.map((deal:Deal) => 
         <div key={deal.name}>
             <h2> {deal.name} </h2>
             <p> { deal.value }</p>
