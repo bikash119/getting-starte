@@ -1,16 +1,22 @@
 import { Form , useFetcher } from "react-router";
-import Chart from "./chart"
-import type { PostgrestError } from "@supabase/supabase-js";
+import DealsChart from "./chart";
+import { z } from 'zod';
+import type { DealSchema ,DealsResponseSchema} from "api/type/deals";
+import { loader } from "~/routes/home";
 
-type WelcomeProps = {
-  loaderData: {
-    salesDeals: any[] | null
-    error: PostgrestError | null
-  }
-}
+const WelcomePropsSchema = z.object({
+  loaderData: z.object({
+    salesDeals: z.array(z.object({name: z.string(), value: z.number()})),
+    error: z.string(),
+    status: z.number()
+  })
+});
 
-export default function Welcome({loaderData}: WelcomeProps) {
+type WelcomeProps = z.infer<typeof WelcomePropsSchema>;
+
+export default function Welcome(props: WelcomeProps) {
   const fetcher = useFetcher()
+  const {loaderData} = props
   return (
     <>
       <header className="flex w-full bg-slate-400">
@@ -20,7 +26,7 @@ export default function Welcome({loaderData}: WelcomeProps) {
         </header>
             <main>
                 <section>
-                  <Chart loaderData= { loaderData }/>
+                  <DealsChart salesDeals={loaderData.salesDeals} error={loaderData.error} status={loaderData.status} />
                 </section>
                 <fetcher.Form id="add-deal" method="post">
                   <section>

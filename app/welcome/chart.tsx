@@ -1,22 +1,20 @@
-import type { PostgrestError } from "@supabase/supabase-js"
-import { Chart as ReactChart } from 'react-charts';
-import type { ChartValue, Position } from 'react-charts'
-import React from "react"
-type Deal = {
-    name: string
-    value: number
-} 
-type WelcomeProps = {
-    loaderData: {
-      salesDeals: any[] | null
-      error: PostgrestError | null
-    }
-  }
-type MyDatum = { date: Date, stars: number }
+import { Chart } from 'react-charts';
+import type {  Position } from 'react-charts'
+import { DealSchema } from "api/type/deals";
+import { z } from 'zod';
 
-export default function Chart({loaderData} : WelcomeProps ){
-    console.log("Component Rendered")
-    const {salesDeals,error} = loaderData
+const WelcomePropsSchema = z.object({
+    salesDeals: z.array(z.object({name: z.string(), value: z.number()})).optional(),
+    error: z.string().optional(),
+    status: z.number().optional()
+  })
+  
+  type WelcomeProps = z.infer<typeof WelcomePropsSchema>;
+
+
+export default function DealsChart(props : WelcomeProps){
+    const {salesDeals,error,status } = props
+    if (salesDeals?.length === 0) return <p>{`No data : ${status}`}</p>
     const primaryAxis = {
         getValue: (d:{primary: string}) => d.primary,
         scaleType: 'band' as const,
@@ -24,7 +22,6 @@ export default function Chart({loaderData} : WelcomeProps ){
         position: 'bottom' as Position,
     };
 
-    
     const secondaryAxes = [{
         getValue: (d: { secondary: string}) => d.secondary,
         scaleType: 'linear' as const,
@@ -42,10 +39,11 @@ export default function Chart({loaderData} : WelcomeProps ){
         }
         return 5000; 
       }
-    const chartData = [{data:salesDeals!.map((deal:Deal) => ({primary:deal.name, secondary:String(deal.value)}))}]
+    const chartData = [{data:salesDeals!.map((deal:z.infer<typeof DealSchema>) => ({primary:deal.name, secondary:String(deal.value)}))}]
+    
     const elems = (
-        <div className="w-3xl h-36 flex grow">
-            <ReactChart
+        <div className="w-2xl h-60 flex grow pl-12.5">
+            <Chart
             options={{
               data: chartData,
               primaryAxis,
@@ -59,10 +57,11 @@ export default function Chart({loaderData} : WelcomeProps ){
           />
         </div>
     )
+
     return (
         <>
             <h2>Chart data here</h2>
-            {elems}
+            { elems}
         </>
     )
 }
