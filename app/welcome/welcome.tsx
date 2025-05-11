@@ -2,7 +2,7 @@ import { Form , useFetcher } from "react-router";
 import DealsChart from "./chart";
 import { z } from 'zod';
 import type { DealSchema ,DealsResponseSchema} from "api/type/deals";
-import { loader } from "~/routes/home";
+
 
 const WelcomePropsSchema = z.object({
   loaderData: z.object({
@@ -13,6 +13,7 @@ const WelcomePropsSchema = z.object({
 });
 
 type WelcomeProps = z.infer<typeof WelcomePropsSchema>;
+
 
 export default function Welcome(props: WelcomeProps) {
   const fetcher = useFetcher()

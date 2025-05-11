@@ -1,11 +1,11 @@
 {
     "$schema": "./node_modules/wrangler/config-schema.json",
-    "name": "react-router-address-book",
+    "name": "sales-dashboard",
     "compatibility_date": "2025-04-04",
     "compatibility_flags": [
     "nodejs_compat"
     ],
-    "main": "./api/app.ts",
+    "main": "api/app.ts",
     "observability": {
       "enabled": true
     }

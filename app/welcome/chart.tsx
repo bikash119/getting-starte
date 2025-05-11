@@ -1,6 +1,5 @@
 import { Chart } from 'react-charts';
 import type {  Position } from 'react-charts'
-import { DealSchema } from "api/type/deals";
 import { z } from 'zod';
 
 const WelcomePropsSchema = z.object({

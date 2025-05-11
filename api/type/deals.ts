@@ -11,6 +11,7 @@ const DealsResponse = z.object({
     message: z.string().optional()
 })
 type DealSchema = z.infer<typeof Deal>
+type DealWithIdSchema = z.infer<typeof DealWithId>
 type DealsResponseSchema = z.infer<typeof DealsResponse>
-export type { DealSchema, DealsResponseSchema}
+export type { DealSchema, DealWithIdSchema, DealsResponseSchema}
 export { Deal, DealWithId,DealsResponse }

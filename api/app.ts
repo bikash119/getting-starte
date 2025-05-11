@@ -1,62 +1,48 @@
 import { createRequestHandler } from "react-router";
-
 import { Hono } from "hono";
-import dealRouter from "./routes/DealRoutes"
-const app = new Hono()
+import { logger } from 'hono/logger'
+import { cors } from 'hono/cors'
+import dealsRouter from "./routes/DealRoutes";
+import { getallSalesDeals } from "./services/SalesDeal";
 
-declare module "react-router" {
-  export interface AppLoadContext {
-    cloudflare: {
-      env: Env;
-      ctx: ExecutionContext;
-    };
-  }
-}
-// Add X-Response-Time header
-app.use('*', async (c, next) => {
-    const start = Date.now()
-    await next()
-    const ms = Date.now() - start
-    c.header('X-Response-Time', `${ms}ms`)
+const app = new Hono()
+app.use(logger())
+
+app.use(async function logger(c, next) {
+  await next()
+  c.req.matchedRoutes.forEach(({ handler, method, path }, i) => {
+    const name =
+      handler.name ||
+      (handler.length < 2 ? '[handler]' : '[middleware]')
+    console.log(
+      method,
+      ' ',
+      path,
+      ' '.repeat(Math.max(10 - path.length, 0)),
+      name,
+      handler.name,
+      i === c.req.routeIndex ? '<- respond from here' : ''
+    )
   })
-  
-// Custom Not Found Message
-app.notFound((c) => {
-return c.text('Custom 404 Not Found', 404)
 })
-  
-// Error handling
-app.onError((err, c) => {
-console.error(`${err}`)
-return c.text('Custom Error Message', 500)
-})
-app.use("*", async (c, next) => {
-    await next();
-});
+// API routes
+
+app.route("/api/v1", dealsRouter)
+
+// React Router request handler
 const requestHandler = createRequestHandler(
   () => import("virtual:react-router/server-build"),
-  import.meta.env.MODE
+  import.meta.env.MODE,
 );
-app.route("/salesDeal", dealRouter)
-
-//handle React Router request
-app.get("*", async(c) => {
-    return requestHandler(c.req.raw, {
-        cloudflare: { env: c.env as Env, ctx: c.executionCtx as ExecutionContext },
-      });
-});
-app.post("*", async(c) => {
-    return requestHandler(c.req.raw, {
-        cloudflare: { env: c.env as Env, ctx: c.executionCtx as ExecutionContext },
-      });
-});
-
-// Catch-all route for static assets
-app.all("/assets/*", async (c) => {
-    return c.env.ASSETS.fetch(c.req.raw);
+// Handle React Router requests
+app.get("*", async (c) => {
+  return requestHandler(c.req.raw, {
+    cloudflare: { env: c.env, ctx: c.executionCtx },
   });
-  
+});
+
+
 export default {
-fetch: app.fetch,
-};
+    fetch: app.fetch
+  } satisfies ExportedHandler<Env>;
   

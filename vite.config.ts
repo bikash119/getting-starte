@@ -6,8 +6,9 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
   plugins: [
+    cloudflare({viteEnvironment: { name :"ssr"}}),
     tailwindcss(), 
     reactRouter(), 
     tsconfigPaths(),
-    cloudflare({viteEnvironment: { name :"ssr"}})],
+  ]
 });
