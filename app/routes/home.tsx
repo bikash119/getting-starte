@@ -15,6 +15,15 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
+export async function action({ params, request }: Route.ActionArgs) {
+  const data = await request.formData()
+  console.log(`[Action] Processing form submission : ${data} `)
+  return { ok: true };
+}
+
+// export async function clientAction({request,params}: Route.ClientActionArgs){
+//   console.log(`[Client Action function]`)
+// }
 
 export async function loader({context,request}: Route.LoaderArgs) {
   try {
@@ -28,10 +37,6 @@ export async function loader({context,request}: Route.LoaderArgs) {
   }
 }
 
-export async function clientAction({request}:Route.ClientActionArgs) {
-  const data = await request.formData()
-  console.log(`[Action] Processing form submission : ${data} `)
-}
 
 const DealsLoaderDataSchema = z.object({
   salesDeals: z.array(DealWithId),
@@ -41,13 +46,9 @@ const DealsLoaderDataSchema = z.object({
 
 type DealsLoaderData = z.infer<typeof DealsLoaderDataSchema>;
 
-export default function Home({loaderData}: Route.ComponentProps) {
-  const fetcher = useFetcher()
+export default function Home(loaderData: DealsLoaderData) {
   const {salesDeals, error, status} = loaderData
   return (
-    <>
-      <h1>{salesDeals.length}</h1>
-        <Welcome loaderData={{salesDeals, error, status}} />
-    </>
+      <Welcome loaderData={{salesDeals, error, status}} />
   );
 }

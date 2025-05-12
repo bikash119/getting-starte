@@ -41,8 +41,11 @@ app.get("*", async (c) => {
   });
 });
 
-
 export default {
-    fetch: app.fetch
+    async fetch(request, env, ctx) {
+      return requestHandler(request, {
+        cloudflare: { env, ctx },
+      });
+    },
   } satisfies ExportedHandler<Env>;
   
