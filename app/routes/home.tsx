@@ -15,12 +15,6 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
-export async function action({ params, request }: Route.ActionArgs) {
-  const data = await request.formData()
-  console.log(`[Action] Processing form submission : ${data.get('name')} `)
-  return { ok: true };
-}
-
 export async function clientAction({request}: Route.ClientActionArgs){
   console.log(`[Client Action function]`)
   const formData = await request.formData()
@@ -37,9 +31,7 @@ export async function clientAction({request}: Route.ClientActionArgs){
     })
     
     console.log('Parsed form data:', data)
-    // Now data.value will be a number, not a string
-    
-    // You can proceed with your API call here
+
     const createOrUpdateDeal = await fetch("/api/v1/salesDeal", {
       method: "POST",
       body: JSON.stringify(data),
