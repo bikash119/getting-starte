@@ -42,13 +42,17 @@ app.get("*", async (c) => {
 });
 
 export default {
-    async fetch(request, env, ctx) {
+    async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+      const url = new URL(request.url);
+      
+      // If it's an API route, let Hono handle it
+      if (url.pathname.startsWith('/api/')) {
+        return app.fetch(request, env, ctx);
+      }
+      
+      // Otherwise, let React Router handle it
       return requestHandler(request, {
         cloudflare: { env, ctx },
       });
     },
   } satisfies ExportedHandler<Env>;
-  
-// export default {
-//     fetch: app.fetch
-// }
