@@ -1,8 +1,7 @@
-import { Form , useFetcher } from "react-router";
+import { useFetcher } from "react-router";
 import DealsChart from "./chart";
 import { z } from 'zod';
-import type { DealSchema ,DealsResponseSchema} from "api/type/deals";
-
+import { useRef } from 'react'
 
 const WelcomePropsSchema = z.object({
   loaderData: z.object({
@@ -17,7 +16,18 @@ type WelcomeProps = z.infer<typeof WelcomePropsSchema>;
 
 export default function Welcome(props: WelcomeProps) {
   const fetcher = useFetcher()
+  const formRef = useRef<HTMLFormElement>(null)
   const {loaderData} = props
+  const isSubmitting = fetcher.state === 'submitting'
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    
+    fetcher.submit(formData, { method: 'post' })
+    
+    // Reset immediately for optimistic UI
+    formRef.current?.reset()
+  }
   return (
     <>
       <header className="flex w-full bg-slate-400">
@@ -29,7 +39,12 @@ export default function Welcome(props: WelcomeProps) {
                 <section>
                   <DealsChart salesDeals={loaderData.salesDeals} error={loaderData.error} status={loaderData.status} />
                 </section>
-                <fetcher.Form id="add-deal" method="post">
+                <fetcher.Form 
+                  id="add-deal" 
+                  method="post" 
+                  onSubmit={handleSubmit}
+                  ref={formRef}
+                >
                   <section>
                       <p>
                         <span>Sales Rep:</span>
@@ -38,6 +53,7 @@ export default function Welcome(props: WelcomeProps) {
                           name="name"
                           placeholder="sales rep name"
                           type="text"
+                          disabled={isSubmitting}
                           />
                         <span>Sale Value:</span>
                         <input 
@@ -45,11 +61,13 @@ export default function Welcome(props: WelcomeProps) {
                           name="value"
                           placeholder="sale value"
                           type="text"
+                          disabled={isSubmitting}
                           />
                         <button 
                           className="border-2 bg-stone-300 cursor-pointer" 
                           type="submit"
-                          >Add</button>
+                          >{isSubmitting ? 'Adding...' : 'Add'}
+                          </button>
                       </p>
                   </section>
                 </fetcher.Form>
