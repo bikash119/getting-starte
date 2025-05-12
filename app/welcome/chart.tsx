@@ -59,7 +59,6 @@ export default function DealsChart(props : WelcomeProps){
 
     return (
         <>
-            <h2>Chart data here</h2>
             { elems}
         </>
     )

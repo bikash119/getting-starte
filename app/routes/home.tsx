@@ -5,10 +5,6 @@ import { Deal, DealWithId } from "api/type/deals";
 import { z } from 'zod';
 import { getallSalesDeals } from "api/services/SalesDeal";
 
-
-// Response validation schema
-
-
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "New React Router App" },

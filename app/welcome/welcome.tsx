@@ -30,10 +30,23 @@ export default function Welcome(props: WelcomeProps) {
   }
   return (
     <>
-      <header className="flex w-full bg-slate-400">
-          <nav>
-            <h1 className="text-2xl">Getting Started</h1>
-          </nav>
+      <header >
+          <h1 
+            className="flex w-full h-13.5 bg-green-900 justify-center align-center gap-4 text-5xl text-white font-bold ">
+              
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ marginRight: '8px' , marginTop: '10px'}}
+            >
+            <path d="M12 2v8M12 14v8M4.93 4.93l5.66 5.66M13.41 13.41l5.66 5.66M2 12h8M14 12h8M4.93 19.07l5.66-5.66M13.41 10.59l5.66-5.66" 
+            stroke="#29d952" strokeWidth="2.5" strokeLinecap="round"/>
+            </svg>
+            Sales Team Dashboard
+          </h1>
         </header>
             <main>
                 <section>
