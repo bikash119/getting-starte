@@ -7,9 +7,9 @@ import { Deal } from "api/type/deals"
 const app = new Hono()
 app.use(logger())
 
-app.get("/salesDeal", async (c) => c.json(await getallSalesDeals()))
+app.get("/", async (c) => c.json(await getallSalesDeals()))
 
-app.post("/salesDeal", async (c) => {
+app.post("/", async (c) => {
     console.log("[DealRouter] Post invocation ")
     const formData = await c.req.json()
     const deal = Deal.parse(formData)

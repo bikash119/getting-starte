@@ -17,13 +17,46 @@ export function meta({}: Route.MetaArgs) {
 }
 export async function action({ params, request }: Route.ActionArgs) {
   const data = await request.formData()
-  console.log(`[Action] Processing form submission : ${data} `)
+  console.log(`[Action] Processing form submission : ${data.get('name')} `)
   return { ok: true };
 }
 
-// export async function clientAction({request,params}: Route.ClientActionArgs){
-//   console.log(`[Client Action function]`)
-// }
+export async function clientAction({request}: Route.ClientActionArgs){
+  console.log(`[Client Action function]`)
+  const formData = await request.formData()
+  try{
+    const requestBody = z.object({
+      name: z.string(),
+      value: z.string().transform((val) => Number(val)),
+      // Add more fields as needed
+    })
+    
+    const data = requestBody.parse({
+      name: formData.get('name'),
+      value: formData.get('value'),
+    })
+    
+    console.log('Parsed form data:', data)
+    // Now data.value will be a number, not a string
+    
+    // You can proceed with your API call here
+    const createOrUpdateDeal = await fetch("/api/v1/salesDeal", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    
+    if(createOrUpdateDeal.ok){
+      const deal = await createOrUpdateDeal.json()
+      return {deal, status: "ok", statusCode: createOrUpdateDeal.status}
+    }
+  }catch(error){
+    console.log(`Error occurred for client action : ${error}`)
+    return {undefined, status: "error", statusCode: 500}
+  }
+}
 
 export async function loader({context,request}: Route.LoaderArgs) {
   try {
@@ -37,16 +70,7 @@ export async function loader({context,request}: Route.LoaderArgs) {
   }
 }
 
-
-const DealsLoaderDataSchema = z.object({
-  salesDeals: z.array(DealWithId),
-  error: z.string(),
-  status: z.number()
-});
-
-type DealsLoaderData = z.infer<typeof DealsLoaderDataSchema>;
-
-export default function Home(loaderData: DealsLoaderData) {
+export default function Home({loaderData}: Route.ComponentProps) {
   const {salesDeals, error, status} = loaderData
   return (
       <Welcome loaderData={{salesDeals, error, status}} />

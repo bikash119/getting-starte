@@ -27,7 +27,7 @@ app.use(async function logger(c, next) {
 })
 // API routes
 
-app.route("/api/v1", dealsRouter)
+app.route("/api/v1/salesDeal", dealsRouter)
 
 // React Router request handler
 const requestHandler = createRequestHandler(
@@ -49,3 +49,6 @@ export default {
     },
   } satisfies ExportedHandler<Env>;
   
+// export default {
+//     fetch: app.fetch
+// }
