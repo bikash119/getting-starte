@@ -1,15 +1,16 @@
 import type { DealSchema, DealWithIdSchema } from "api/type/deals";
 import { DealWithId } from "api/type/deals";
-import supabase from "./supabase";
 import { z } from 'zod';
+import getSupbaseClient  from "./supabase";
+
 
 const ApiResponseSchema = z.object({
     deals: z.array(DealWithId),
     message: z.string().optional()
 });
 
-export async function getallSalesDeals(): Promise<DealWithIdSchema[]> {
-    const { data, error } = await supabase
+export async function getallSalesDeals(env:Env): Promise<DealWithIdSchema[]> {
+    const { data, error } = await getSupbaseClient(env)
         .from('sales_deals')
         .select(
             `
@@ -25,8 +26,8 @@ export async function getallSalesDeals(): Promise<DealWithIdSchema[]> {
     
 }
 
-export async function addNewDeal(deal: DealSchema) : Promise<DealWithIdSchema|undefined>{
-    const {data, error} = await supabase
+export async function addNewDeal(env:Env,deal: DealSchema) : Promise<DealWithIdSchema|undefined>{
+    const {data, error} = await getSupbaseClient(env)
       .from('sales_deals')
       .insert({ 
         name: deal.name, 
@@ -43,8 +44,8 @@ export async function addNewDeal(deal: DealSchema) : Promise<DealWithIdSchema|un
     }
 }
 
-export async function updateDeal(deal:DealSchema,existingDeal:DealWithIdSchema) : Promise<DealWithIdSchema|undefined> {
-    const {data, error} = await supabase
+export async function updateDeal(env:Env, deal:DealSchema,existingDeal:DealWithIdSchema) : Promise<DealWithIdSchema|undefined> {
+    const {data, error} = await getSupbaseClient(env)
       .from('sales_deals')
       .update({ 
         value: deal.value + existingDeal.value
@@ -61,8 +62,8 @@ export async function updateDeal(deal:DealSchema,existingDeal:DealWithIdSchema) 
     } 
 }
 
-export async function findDealByName(name:string): Promise<DealWithIdSchema|undefined>{
-    const { data, error } = await supabase
+export async function findDealByName(env:Env, name:string): Promise<DealWithIdSchema|undefined>{
+    const { data, error } = await getSupbaseClient(env)
         .from('sales_deals')
         .select(
             `
@@ -82,12 +83,12 @@ export async function findDealByName(name:string): Promise<DealWithIdSchema|unde
     }
 }
 
-export async function addOrUpdate(deal:DealSchema): Promise<DealWithIdSchema|undefined>{
-    const existingDeal = await findDealByName(deal.name)
+export async function addOrUpdate(env:Env, deal:DealSchema): Promise<DealWithIdSchema|undefined>{
+    const existingDeal = await findDealByName(env,deal.name)
     if(existingDeal){
         console.log(`[SalesDeal DB Service] : Sales Rep exist in system. Updating the deal value for sales rep : ${deal.name}`)
-        return updateDeal(deal,existingDeal)
+        return updateDeal(env,deal,existingDeal)
     }
     console.log("[SalesDeal DB Service] : Sales Rep exist not found in system. Adding a new record...")
-    return addNewDeal(deal)
+    return addNewDeal(env,deal)
 }
