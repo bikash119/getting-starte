@@ -1,9 +1,7 @@
 import { createRequestHandler } from "react-router";
 import { Hono } from "hono";
 import { logger } from 'hono/logger'
-import { cors } from 'hono/cors'
 import dealsRouter from "./routes/DealRoutes";
-import { getallSalesDeals } from "./services/SalesDeal";
 
 const app = new Hono()
 app.use(logger())
@@ -43,8 +41,8 @@ app.get("*", async (c) => {
 
 export default {
     async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+
       const url = new URL(request.url);
-      
       // If it's an API route, let Hono handle it
       if (url.pathname.startsWith('/api/')) {
         return app.fetch(request, env, ctx);

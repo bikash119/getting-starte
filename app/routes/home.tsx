@@ -1,7 +1,5 @@
 import type { Route } from "./+types/home";
-import { useFetcher, Form } from 'react-router';
 import Welcome from "../welcome/welcome"
-import { Deal, DealWithId } from "api/type/deals";
 import { z } from 'zod';
 import { getallSalesDeals } from "api/services/SalesDeal";
 
@@ -48,8 +46,9 @@ export async function clientAction({request}: Route.ClientActionArgs){
 
 export async function loader({context,request}: Route.LoaderArgs) {
   try {
-    console.log("[Loader] Fetching deals")
-    const data = await getallSalesDeals()
+    console.log(`[Loader] Fetching deals`)
+    const cloudflare = context.cloudflare as { env: Env };
+    const data = await getallSalesDeals(cloudflare.env)
     return {salesDeals: data, error: "",status: data.length === 0?500:200}
   } catch (error) {
     const message = `Unexpected error in deals loader: ${error}`
