@@ -9,7 +9,9 @@
     "deploy": "npm run build && wrangler deploy",
     "deploy:prod": "npm run build && wrangler deploy --env prod",
     "typegen": "wrangler types && react-router typegen",
-    "typecheck": "npm run typegen && tsc"
+    "typecheck": "npm run typegen && tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
@@ -32,6 +34,7 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.3",
     "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.4",
     "wrangler": "^4.14.1"
   }
 }

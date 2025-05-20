@@ -13,6 +13,7 @@ A modern, production-ready template for building full-stack React applications u
 - 🔒 TypeScript by default
 - 🎉 TailwindCSS for styling
 - 📖 [React Router docs](https://reactrouter.com/)
+- 🧪 Test-driven development with Vitest
 
 ## Getting Started
 
@@ -81,6 +82,20 @@ Make sure to deploy the output of `npm run build`
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for testing. To run the tests:
+
+```bash
+# Run all tests once
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+For more details on the testing setup, see the [TESTING.md](./TESTING.md) file.
 
 ---
 
